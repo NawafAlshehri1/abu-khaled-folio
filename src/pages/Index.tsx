@@ -70,8 +70,9 @@ const Index = () => {
       <div className="max-w-7xl mx-auto">
         {/* العنوان */}
         <div className="text-center mb-8 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold mb-3 gradient-primary bg-clip-text text-transparent">
-            منصة أبو خالد
+          <h1 className="text-4xl md:text-5xl font-bold mb-3">
+            <div className="text-muted-foreground text-2xl md:text-3xl mb-2">منصة</div>
+            <div className="gradient-primary bg-clip-text text-transparent">أبو خالد</div>
           </h1>
           <p className="text-lg text-muted-foreground mb-2">لإدارة محفظته الشخصية</p>
           <p className="text-sm text-muted-foreground/80">تم تصميمها بواسطة نواف الشهري</p>
