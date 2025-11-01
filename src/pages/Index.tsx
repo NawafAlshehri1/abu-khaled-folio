@@ -73,7 +73,8 @@ const Index = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-3 gradient-primary bg-clip-text text-transparent">
             منصة أبو خالد
           </h1>
-          <p className="text-lg text-muted-foreground">لإدارة المحفظة الاستثمارية</p>
+          <p className="text-lg text-muted-foreground mb-2">لإدارة محفظته الشخصية</p>
+          <p className="text-sm text-muted-foreground/80">تم تصميمها بواسطة نواف الشهري</p>
         </div>
 
         {/* نظرة عامة */}
