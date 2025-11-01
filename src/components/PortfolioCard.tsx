@@ -24,10 +24,10 @@ export const PortfolioCard = ({
   const isProfit = profitLoss >= 0;
 
   return (
-    <Card className={cn("p-6 hover-lift gradient-card border-border/50", gradient)}>
+    <Card className={cn("p-6 card-hover gradient-card border-border/50", gradient)}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-lg bg-muted/50">
+          <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
             {icon}
           </div>
           <h3 className="text-lg font-semibold">{title}</h3>

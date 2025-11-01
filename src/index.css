@@ -8,44 +8,44 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --background: 240 10% 5%;
+    --foreground: 240 5% 96%;
 
-    --card: 222 47% 15%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 8% 8%;
+    --card-foreground: 240 5% 96%;
 
-    --popover: 222 47% 15%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 8% 8%;
+    --popover-foreground: 240 5% 96%;
 
-    --primary: 45 93% 58%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 240 10% 5%;
 
-    --secondary: 217 33% 25%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 240 5% 15%;
+    --secondary-foreground: 240 5% 96%;
 
-    --muted: 217 33% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 240 5% 15%;
+    --muted-foreground: 240 4% 60%;
 
-    --accent: 199 89% 48%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 268 80% 65%;
+    --accent-foreground: 240 10% 5%;
 
-    --success: 142 76% 36%;
-    --success-foreground: 210 40% 98%;
+    --success: 162 73% 46%;
+    --success-foreground: 240 5% 96%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 240 5% 96%;
 
-    --border: 217 33% 25%;
-    --input: 217 33% 25%;
-    --ring: 45 93% 58%;
+    --border: 240 6% 18%;
+    --input: 240 6% 18%;
+    --ring: 217 91% 60%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    --chart-1: 45 93% 58%;
-    --chart-2: 199 89% 48%;
-    --chart-3: 142 76% 36%;
-    --chart-4: 0 84% 60%;
-    --chart-5: 280 80% 50%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 268 80% 65%;
+    --chart-3: 162 73% 46%;
+    --chart-4: 43 96% 56%;
+    --chart-5: 27 87% 67%;
   }
 }
 
@@ -62,19 +62,31 @@ All colors MUST be HSL.
 
 @layer utilities {
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    background: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(268 80% 65%) 100%);
   }
   
   .gradient-card {
-    background: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(217 33% 18%) 100%);
+    background: linear-gradient(135deg, hsl(240 8% 10%) 0%, hsl(240 8% 14%) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid hsl(240 6% 20% / 0.5);
   }
 
   .gradient-success {
-    background: linear-gradient(135deg, hsl(var(--success)) 0%, hsl(142 76% 45%) 100%);
+    background: linear-gradient(135deg, hsl(162 73% 46%) 0%, hsl(162 63% 36%) 100%);
   }
 
   .gradient-destructive {
-    background: linear-gradient(135deg, hsl(var(--destructive)) 0%, hsl(0 84% 70%) 100%);
+    background: linear-gradient(135deg, hsl(0 72% 51%) 0%, hsl(0 62% 41%) 100%);
+  }
+
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px hsl(217 91% 60% / 0.3);
+    border-color: hsl(217 91% 60% / 0.4);
   }
 
   .animate-slide-up {

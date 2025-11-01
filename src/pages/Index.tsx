@@ -1,37 +1,63 @@
+import { useState, useEffect } from "react";
 import { PortfolioOverview } from "@/components/PortfolioOverview";
 import { PortfolioCard } from "@/components/PortfolioCard";
 import { PortfolioChart } from "@/components/PortfolioChart";
 import { AveragePriceCalculator } from "@/components/AveragePriceCalculator";
 import { ProfitLossCalculator } from "@/components/ProfitLossCalculator";
+import { AddInvestmentForm, Investment } from "@/components/AddInvestmentForm";
+import { InvestmentList } from "@/components/InvestmentList";
 import { TrendingUp, Coins, Bitcoin } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
 
 const Index = () => {
-  // بيانات تجريبية - يمكن استبدالها ببيانات حقيقية لاحقاً
-  const saudiStocks = {
-    totalValue: 150000,
-    initialInvestment: 120000,
-    profitLoss: 30000,
-    profitPercentage: 25,
+  const [investments, setInvestments] = useState<Investment[]>(() => {
+    const saved = localStorage.getItem("investments");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("investments", JSON.stringify(investments));
+  }, [investments]);
+
+  const handleAddInvestment = (investment: Omit<Investment, "id">) => {
+    const newInvestment: Investment = {
+      ...investment,
+      id: Date.now().toString(),
+    };
+    setInvestments([...investments, newInvestment]);
   };
 
-  const gold = {
-    totalValue: 80000,
-    initialInvestment: 75000,
-    profitLoss: 5000,
-    profitPercentage: 6.67,
+  const handleDeleteInvestment = (id: string) => {
+    setInvestments(investments.filter((inv) => inv.id !== id));
+    toast.success("تم حذف الاستثمار");
   };
 
-  const crypto = {
-    totalValue: 95000,
-    initialInvestment: 100000,
-    profitLoss: -5000,
-    profitPercentage: -5,
+  // Calculate totals by market
+  const calculateMarketData = (market: "saudi" | "gold" | "crypto") => {
+    const marketInvestments = investments.filter((inv) => inv.market === market);
+    const totalValue = marketInvestments.reduce(
+      (sum, inv) => sum + inv.shares * inv.currentPrice,
+      0
+    );
+    const initialInvestment = marketInvestments.reduce(
+      (sum, inv) => sum + inv.shares * inv.buyPrice,
+      0
+    );
+    const profitLoss = totalValue - initialInvestment;
+    const profitPercentage = initialInvestment > 0 ? (profitLoss / initialInvestment) * 100 : 0;
+
+    return { totalValue, initialInvestment, profitLoss, profitPercentage };
   };
+
+  const saudiStocks = calculateMarketData("saudi");
+  const gold = calculateMarketData("gold");
+  const crypto = calculateMarketData("crypto");
 
   const totalValue = saudiStocks.totalValue + gold.totalValue + crypto.totalValue;
   const totalInitial = saudiStocks.initialInvestment + gold.initialInvestment + crypto.initialInvestment;
   const totalProfit = saudiStocks.profitLoss + gold.profitLoss + crypto.profitLoss;
-  const totalProfitPercentage = ((totalProfit / totalInitial) * 100);
+  const totalProfitPercentage = totalInitial > 0 ? (totalProfit / totalInitial) * 100 : 0;
 
   const chartData = [
     { name: "الأسهم السعودية", value: saudiStocks.totalValue, profit: saudiStocks.profitLoss },
@@ -60,8 +86,13 @@ const Index = () => {
           />
         </div>
 
+        {/* إضافة استثمار */}
+        <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <AddInvestmentForm onAdd={handleAddInvestment} />
+        </div>
+
         {/* بطاقات الأسواق */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-slide-up" style={{ animationDelay: '0.15s' }}>
           <PortfolioCard
             title="الأسهم السعودية"
             icon={<TrendingUp className="w-6 h-6 text-primary" />}
@@ -91,10 +122,56 @@ const Index = () => {
           />
         </div>
 
-        {/* الرسوم البيانية */}
-        <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-          <PortfolioChart data={chartData} />
+        {/* قائمة الاستثمارات */}
+        <div className="animate-slide-up mb-8" style={{ animationDelay: '0.2s' }}>
+          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+            <span className="w-2 h-8 gradient-primary rounded-full"></span>
+            استثماراتك
+          </h2>
+          <Tabs defaultValue="all" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 mb-6 bg-card/50">
+              <TabsTrigger value="all">الكل</TabsTrigger>
+              <TabsTrigger value="saudi">السعودية</TabsTrigger>
+              <TabsTrigger value="gold">الذهب</TabsTrigger>
+              <TabsTrigger value="crypto">العملات</TabsTrigger>
+            </TabsList>
+            <TabsContent value="all">
+              <InvestmentList
+                investments={investments}
+                onDelete={handleDeleteInvestment}
+                marketFilter="all"
+              />
+            </TabsContent>
+            <TabsContent value="saudi">
+              <InvestmentList
+                investments={investments}
+                onDelete={handleDeleteInvestment}
+                marketFilter="saudi"
+              />
+            </TabsContent>
+            <TabsContent value="gold">
+              <InvestmentList
+                investments={investments}
+                onDelete={handleDeleteInvestment}
+                marketFilter="gold"
+              />
+            </TabsContent>
+            <TabsContent value="crypto">
+              <InvestmentList
+                investments={investments}
+                onDelete={handleDeleteInvestment}
+                marketFilter="crypto"
+              />
+            </TabsContent>
+          </Tabs>
         </div>
+
+        {/* الرسوم البيانية */}
+        {investments.length > 0 && (
+          <div className="animate-slide-up" style={{ animationDelay: '0.25s' }}>
+            <PortfolioChart data={chartData} />
+          </div>
+        )}
 
         {/* الحاسبات */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 animate-slide-up" style={{ animationDelay: '0.3s' }}>
